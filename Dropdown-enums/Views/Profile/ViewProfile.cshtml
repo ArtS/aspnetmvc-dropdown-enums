@@ -1,0 +1,27 @@
+﻿@model Dropdowns.Models.UserProfileModel
+@{
+    ViewBag.Title = "Welcome, " + Model.Name;
+}
+
+<div class="row">
+    <div class="col-sm-4 col-sm-offset-4">
+        
+        <h2>Welcome, @Model.Name</h2>
+
+        <div class="panel panel-default">
+            <div class="panel-body">              
+
+                <p>Please check your details below</p>
+
+                <dl>
+                    <dt>Your name</dt>
+                    <dd>@Model.Name</dd>
+
+                    <dt>Your state</dt>
+                    <dd>@Model.State</dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+</div>
+

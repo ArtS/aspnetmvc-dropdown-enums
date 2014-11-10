@@ -14,9 +14,15 @@ namespace Dropdowns
             routes.IgnoreRoute("{resource}.axd/{*pathInfo}");
 
             routes.MapRoute(
+                name: "Home",
+                url: "",
+                defaults: new { controller = "Profile", action = "UserProfile" }
+            );
+
+            routes.MapRoute(
                 name: "Default",
-                url: "{controller}/{action}/{id}",
-                defaults: new { controller = "UserProfile", action = "UserProfile", id = UrlParameter.Optional }
+                url: "{controller}/{action}",
+                defaults: new { controller = "Profile", action = "UserProfile" }
             );
         }
     }

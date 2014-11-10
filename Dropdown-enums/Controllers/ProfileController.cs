@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Dropdowns.Models;
 
@@ -56,25 +58,29 @@ namespace Dropdowns.Controllers
             return View(model);
         }
 
-        // This is one of the most important parts in the whole example.
-        // This function takes a list of strings and returns a list of SelectListItem objects.
-        // These objects are going to be used later in the UserProfile.html template to render the
-        // DropDownList.
         private IEnumerable<SelectListItem> GetSelectListItems()
         {
-            // Create an empty list to hold result of the operation
             var selectList = new List<SelectListItem>();
+            
+            var enumType = typeof(Industry);
+            var enumValues = Enum.GetValues(enumType) as Industry[];
+            if (enumValues == null)
+                return null;
 
-            // For each string in the 'elements' variable, create a new SelectListItem object
-            // that has both it's Value and Text properties set to a particular state.
-            // This will result in MVC rendering each item as:
-            //     <option value="State Name">State Name</option>
-            foreach (var element in elements)
+            foreach (var enumValue in enumValues)
             {
+                var memberInfo = enumType.GetMember(enumValue.ToString());
+                if (memberInfo.Length != 1)
+                    continue;
+                
+                var displayAttribute = memberInfo[0].GetCustomAttributes(typeof (DisplayAttribute), false) as DisplayAttribute[];
+                if (displayAttribute == null || displayAttribute.Length != 1)
+                    continue;
+
                 selectList.Add(new SelectListItem
                 {
-                    Value = element,
-                    Text = element
+                    Value = enumValue.ToString(),
+                    Text = displayAttribute[0].Name
                 });
             }
 

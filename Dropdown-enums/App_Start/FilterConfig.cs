@@ -1,7 +1,7 @@
 ﻿using System.Web;
 using System.Web.Mvc;
 
-namespace Dropdown_enums
+namespace Dropdowns
 {
     public class FilterConfig
     {

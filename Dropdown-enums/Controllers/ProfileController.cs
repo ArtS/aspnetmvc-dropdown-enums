@@ -13,7 +13,8 @@ namespace Dropdowns.Controllers
         //
         public ActionResult UserProfile()
         {
-            var model = new UserProfileModel();
+            // Get existing user profile object from the session or create a new one
+            var model = Session["UserProfileModel"] as UserProfileModel ?? new UserProfileModel();
 
             // Create a list of SelectListItems from Industries so these can be rendered on the page
             // under the drop down
@@ -54,10 +55,18 @@ namespace Dropdowns.Controllers
             // Get user profile information from the session
             var model = Session["UserProfileModel"] as UserProfileModel;
 
-            // Display ViewProfile.html page that shows FirstName and selected state.
+            // Get a description of the currently selected industry from the 
+            // [Display] attribute of the Industry enum
+            model.IndustryName = GetSelectedIndustryName(model.Industry);
+
+            // Display ViewProfile.html page that shows FirstName, Last Name and selected Industry.
             return View(model);
         }
 
+        /// <summary>
+        /// TODO: Put comments here
+        /// </summary>
+        /// <returns></returns>
         private IEnumerable<SelectListItem> GetSelectListItems()
         {
             var selectList = new List<SelectListItem>();
@@ -85,6 +94,33 @@ namespace Dropdowns.Controllers
             }
 
             return selectList;
+        }
+
+        /// <summary>
+        /// So we can show nicely formatted text in the UI this function retrieves the
+        /// value from [Display(Name="Editorial & Writing")] attribute.
+        /// </summary>
+        /// <param name="value">Value from Industry enum</param>
+        /// <returns>Value of the "Name" property on Display attribute</returns>
+        private string GetSelectedIndustryName(Industry value)
+        {
+            // Get all values from the enum
+            var enumType = typeof(Industry);
+            var enumValues = Enum.GetValues(enumType) as Industry[];
+            if (enumValues == null)
+                return null;
+
+            // Get the MemberInfo object for supplied enum value
+            var memberInfo = enumType.GetMember(value.ToString());
+            if (memberInfo.Length != 1)
+                return null;
+
+            // Get DisplayAttibute on supplied enum value
+            var displayAttribute = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
+            if (displayAttribute == null || displayAttribute.Length != 1)
+                return null;
+
+            return displayAttribute[0].Name;
         }
     }
 }

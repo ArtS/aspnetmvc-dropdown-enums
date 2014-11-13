@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.Web.Mvc;
 using System.ComponentModel.DataAnnotations;
+using System.Web.Mvc;
 
 namespace Dropdowns.Models
 {
@@ -21,5 +21,8 @@ namespace Dropdowns.Models
 
         // This property holds all available industries for selection
         public IEnumerable<SelectListItem> Industries { get; set; }
+
+        // This stored human-readable name of the industry
+        public string IndustryName { get; set; }
     }
 }

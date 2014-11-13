@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Web.Mvc;
 using Dropdowns.Models;
@@ -13,6 +12,7 @@ namespace Dropdowns.Controllers
         //
         public ActionResult UserProfile()
         {
+            // Get existing user profile object from the session or create a new one
             var model = Session["UserProfileModel"] ?? new UserProfileModel();
 
             return View(model);
@@ -24,8 +24,8 @@ namespace Dropdowns.Controllers
         [HttpPost]
         public ActionResult UserProfile(UserProfileModel model)
         {
-            // In case everything is fine - i.e. both "FirstName" and "Industry" are entered/selected,
-            // redirect user to the "ViewProfile" page, and pass the user object along via Session
+            // In case everything is fine - i.e. both "First name", "Last name" and "Industry" are entered/selected,
+            // redirect user to the "ViewProfile" page, and pass the user profile object along via Session
             if (ModelState.IsValid)
             {
                 Session["UserProfileModel"] = model;
@@ -47,23 +47,33 @@ namespace Dropdowns.Controllers
             if (model == null)
                 return RedirectToAction("UserProfile");
 
+            // Get the description of the currently selected industry from the 
+            // [Display] attribute of Industry enum
             model.IndustryName = GetSelectedIndustryName(model.Industry);
 
-            // Display ViewProfile.html page that shows FirstName and selected state.
             return View(model);
         }
 
-        private string GetSelectedIndustryName(Industry industry)
+        /// <summary>
+        /// So we can show nicely formatted text in the UI this function retrieves the
+        /// value from [Display(Name="Editorial & Writing")] attribute.
+        /// </summary>
+        /// <param name="value">Value from Industry enum</param>
+        /// <returns>Value of the "Name" property on Display attribute</returns>
+        private string GetSelectedIndustryName(Industry value)
         {
+            // Get all values from the enum
             var enumType = typeof(Industry);
             var enumValues = Enum.GetValues(enumType) as Industry[];
             if (enumValues == null)
                 return null;
 
-            var memberInfo = enumType.GetMember(industry.ToString());
+            // Get the MemberInfo object for supplied enum value
+            var memberInfo = enumType.GetMember(value.ToString());
             if (memberInfo.Length != 1)
                 return null;
 
+            // Get DisplayAttibute on supplied enum value
             var displayAttribute = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
             if (displayAttribute == null || displayAttribute.Length != 1)
                 return null;

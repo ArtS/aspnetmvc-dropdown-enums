@@ -33,7 +33,7 @@ namespace Dropdowns.Controllers
             // list of states
             model.Industries = GetSelectListItems();
 
-            // In case everything is fine - i.e. both "Name" and "Industry" are entered/selected,
+            // In case everything is fine - i.e. both "FirstName" and "Industry" are entered/selected,
             // redirect user to the "ViewProfile" page, and pass the user object along via Session
             if (ModelState.IsValid)
             {
@@ -54,7 +54,7 @@ namespace Dropdowns.Controllers
             // Get user profile information from the session
             var model = Session["UserProfileModel"] as UserProfileModel;
 
-            // Display ViewProfile.html page that shows Name and selected state.
+            // Display ViewProfile.html page that shows FirstName and selected state.
             return View(model);
         }
 

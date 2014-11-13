@@ -11,10 +11,10 @@
             <div class="panel-body">
                 @using (Html.BeginForm("UserProfile", "Profile", FormMethod.Post, new { role = "form" })) {
 
-                    @* Name textbox *@
+                    @* FirstName textbox *@
                     <div class="form-group">
-                        @Html.LabelFor(m => m.Name)
-                        @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                        @Html.LabelFor(m => m.FirstName)
+                        @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
                     </div>
 
                     @* State selection dropdown *@

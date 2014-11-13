@@ -17,13 +17,18 @@
                         @Html.TextBoxFor(m => m.FirstName, new { @class = "form-control" })
                     </div>
 
+                    @* LastName textbox *@
+                    <div class="form-group">
+                        @Html.LabelFor(m => m.LastName)
+                        @Html.TextBoxFor(m => m.LastName, new { @class = "form-control" })
+                    </div>
+
                     @* State selection dropdown *@
                     <div class="form-group">
                         @Html.LabelFor(m => m.Industry)
-                        @Html.DropDownListFor(m => m.Industry, // Store selected value in Model.Industry
-                                              Model.Industries, // Take list of values from Model.Industries
-                                              "- Please select your industry -", // Text for the first 'default' option
-                                              new { @class = "form-control" }) // A class name to assign to "select" tag
+                        @Html.EnumDropDownListFor(t => t.Industry, 
+                                                  "- Please select your industry -", // Text for the first 'default' option
+                                                   new { @class = "form-control" })  @* A class name to assign to "select" tag *@
                     </div>
 
                     <button type="submit" class="btn btn-primary">Update</button>

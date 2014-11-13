@@ -13,11 +13,7 @@ namespace Dropdowns.Controllers
         //
         public ActionResult UserProfile()
         {
-            var model = new UserProfileModel();
-
-            // Create a list of SelectListItems from Industries so these can be rendered on the page
-            // under the drop down
-            model.Industries = GetSelectListItems();
+            var model = Session["UserProfileModel"] ?? new UserProfileModel();
 
             return View(model);
         }
@@ -28,11 +24,6 @@ namespace Dropdowns.Controllers
         [HttpPost]
         public ActionResult UserProfile(UserProfileModel model)
         {
-            // Set these states on the model. We need to do this because
-            // only selected in the DropDownList value is posted back, not the whole
-            // list of states
-            model.Industries = GetSelectListItems();
-
             // In case everything is fine - i.e. both "FirstName" and "Industry" are entered/selected,
             // redirect user to the "ViewProfile" page, and pass the user object along via Session
             if (ModelState.IsValid)
@@ -41,7 +32,7 @@ namespace Dropdowns.Controllers
                 return RedirectToAction("ViewProfile");
             }
 
-            // Something is not right - so render the registration page again,
+            // Something is not right - so render the profile page again,
             // keeping the data user has entered by supplying the model.
             return View(model);
         }
@@ -53,38 +44,31 @@ namespace Dropdowns.Controllers
         {
             // Get user profile information from the session
             var model = Session["UserProfileModel"] as UserProfileModel;
+            if (model == null)
+                return RedirectToAction("UserProfile");
+
+            model.IndustryName = GetSelectedIndustryName(model.Industry);
 
             // Display ViewProfile.html page that shows FirstName and selected state.
             return View(model);
         }
 
-        private IEnumerable<SelectListItem> GetSelectListItems()
+        private string GetSelectedIndustryName(Industry industry)
         {
-            var selectList = new List<SelectListItem>();
-            
             var enumType = typeof(Industry);
             var enumValues = Enum.GetValues(enumType) as Industry[];
             if (enumValues == null)
                 return null;
 
-            foreach (var enumValue in enumValues)
-            {
-                var memberInfo = enumType.GetMember(enumValue.ToString());
-                if (memberInfo.Length != 1)
-                    continue;
-                
-                var displayAttribute = memberInfo[0].GetCustomAttributes(typeof (DisplayAttribute), false) as DisplayAttribute[];
-                if (displayAttribute == null || displayAttribute.Length != 1)
-                    continue;
+            var memberInfo = enumType.GetMember(industry.ToString());
+            if (memberInfo.Length != 1)
+                return null;
 
-                selectList.Add(new SelectListItem
-                {
-                    Value = enumValue.ToString(),
-                    Text = displayAttribute[0].Name
-                });
-            }
+            var displayAttribute = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
+            if (displayAttribute == null || displayAttribute.Length != 1)
+                return null;
 
-            return selectList;
+            return displayAttribute[0].Name;
         }
     }
 }

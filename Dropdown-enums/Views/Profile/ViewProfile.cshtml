@@ -6,7 +6,7 @@
 <div class="row">
     <div class="col-sm-4 col-sm-offset-4">
         
-        <h2>Welcome, @Model.FirstName</h2>
+        <h2>Welcome, @Model.FirstName @Model.LastName</h2>
 
         <div class="panel panel-default">
             <div class="panel-body">              
@@ -17,13 +17,13 @@
                     <dt>Your name</dt>
                     <dd>@Model.FirstName @Model.LastName</dd>
 
-                    <dt>Your state</dt>
-                    <dd>@Model.Industry</dd>
+                    <dt>Your industry</dt>
+                    <dd>@Model.IndustryName</dd>
+
+                    <dt><a href="@Url.Action("UserProfile")">Edit profile</a></dt>
                 </dl>
             </div>
             
-            <p><a href="@Url.Action("UserProfile")">Edit profile</a></p>
-
         </div>
     </div>
 </div>

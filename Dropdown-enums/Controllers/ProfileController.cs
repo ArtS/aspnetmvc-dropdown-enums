@@ -57,39 +57,31 @@ namespace Dropdowns.Controllers
 
             // Get a description of the currently selected industry from the 
             // [Display] attribute of the Industry enum
-            model.IndustryName = GetSelectedIndustryName(model.Industry);
+            model.IndustryName = GetIndustryName(model.Industry);
 
             // Display ViewProfile.html page that shows FirstName, Last Name and selected Industry.
             return View(model);
         }
 
         /// <summary>
-        /// TODO: Put comments here
+        /// Converts Industry enum to a list of SelectListItems
         /// </summary>
         /// <returns></returns>
         private IEnumerable<SelectListItem> GetSelectListItems()
         {
             var selectList = new List<SelectListItem>();
-            
-            var enumType = typeof(Industry);
-            var enumValues = Enum.GetValues(enumType) as Industry[];
+
+            // Get all values of the Industry enum
+            var enumValues = Enum.GetValues(typeof(Industry)) as Industry[];
             if (enumValues == null)
                 return null;
 
             foreach (var enumValue in enumValues)
             {
-                var memberInfo = enumType.GetMember(enumValue.ToString());
-                if (memberInfo.Length != 1)
-                    continue;
-                
-                var displayAttribute = memberInfo[0].GetCustomAttributes(typeof (DisplayAttribute), false) as DisplayAttribute[];
-                if (displayAttribute == null || displayAttribute.Length != 1)
-                    continue;
-
                 selectList.Add(new SelectListItem
                 {
                     Value = enumValue.ToString(),
-                    Text = displayAttribute[0].Name
+                    Text = GetIndustryName(enumValue)
                 });
             }
 
@@ -102,20 +94,14 @@ namespace Dropdowns.Controllers
         /// </summary>
         /// <param name="value">Value from Industry enum</param>
         /// <returns>Value of the "Name" property on Display attribute</returns>
-        private string GetSelectedIndustryName(Industry value)
+        private string GetIndustryName(Industry value)
         {
-            // Get all values from the enum
-            var enumType = typeof(Industry);
-            var enumValues = Enum.GetValues(enumType) as Industry[];
-            if (enumValues == null)
-                return null;
-
-            // Get the MemberInfo object for supplied enum value
-            var memberInfo = enumType.GetMember(value.ToString());
+            // Get the MemberInfo object for the supplied enum value
+            var memberInfo = value.GetType().GetMember(value.ToString());
             if (memberInfo.Length != 1)
                 return null;
 
-            // Get DisplayAttibute on supplied enum value
+            // Get DisplayAttibute on the supplied enum value
             var displayAttribute = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
             if (displayAttribute == null || displayAttribute.Length != 1)
                 return null;

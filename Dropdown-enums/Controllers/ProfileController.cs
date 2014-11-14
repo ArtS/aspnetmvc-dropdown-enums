@@ -49,7 +49,7 @@ namespace Dropdowns.Controllers
 
             // Get the description of the currently selected industry from the 
             // [Display] attribute of Industry enum
-            model.IndustryName = GetSelectedIndustryName(model.Industry);
+            model.IndustryName = GetIndustryName(model.Industry);
 
             return View(model);
         }
@@ -60,20 +60,14 @@ namespace Dropdowns.Controllers
         /// </summary>
         /// <param name="value">Value from Industry enum</param>
         /// <returns>Value of the "Name" property on Display attribute</returns>
-        private string GetSelectedIndustryName(Industry value)
+        private string GetIndustryName(Industry value)
         {
-            // Get all values from the enum
-            var enumType = typeof(Industry);
-            var enumValues = Enum.GetValues(enumType) as Industry[];
-            if (enumValues == null)
-                return null;
-
             // Get the MemberInfo object for supplied enum value
-            var memberInfo = enumType.GetMember(value.ToString());
+            var memberInfo = value.GetType().GetMember(value.ToString());
             if (memberInfo.Length != 1)
                 return null;
 
-            // Get DisplayAttibute on supplied enum value
+            // Get DisplayAttibute on the supplied enum value
             var displayAttribute = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
             if (displayAttribute == null || displayAttribute.Length != 1)
                 return null;

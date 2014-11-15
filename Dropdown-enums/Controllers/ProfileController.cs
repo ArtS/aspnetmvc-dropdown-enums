@@ -55,7 +55,7 @@ namespace Dropdowns.Controllers
             // Get user profile information from the session
             var model = Session["UserProfileModel"] as UserProfileModel;
 
-            // Get a description of the currently selected industry from the 
+            // Get a description of the currently selected industry from the
             // [Display] attribute of the Industry enum
             model.IndustryName = GetIndustryName(model.Industry);
 
@@ -78,6 +78,8 @@ namespace Dropdowns.Controllers
 
             foreach (var enumValue in enumValues)
             {
+                // Create a new SelectListItem element and set its
+                // Value and Text to the enum value and description.
                 selectList.Add(new SelectListItem
                 {
                     Value = enumValue.ToString(),

@@ -50,6 +50,9 @@ namespace Dropdowns.Controllers
             // Get the description of the currently selected industry from the 
             // [Display] attribute of Industry enum
             model.IndustryName = GetIndustryName(model.Industry);
+            
+            // Or uncomment to use the generic implementation
+            // model.IndustryName = GetEnumDisplayName(model.Industry);
 
             return View(model);
         }
@@ -74,5 +77,25 @@ namespace Dropdowns.Controllers
 
             return displayAttribute[0].Name;
         }
+
+        /// <summary>
+        /// Generic function that obtains value .Neme property of [Display] attribute
+        /// on a supplied enum value. Can be used with any enum, not just 'Industry'
+        /// in this example
+        /// </summary>
+	    private string GetEnumDisplayName<T>(T value) where T: struct
+	    {
+	        // Get the MemberInfo object for supplied enum value
+	        var memberInfo = value.GetType().GetMember(value.ToString());
+	        if (memberInfo.Length != 1)
+		    return null;
+
+	        // Get DisplayAttibute on the supplied enum value
+	        var displayAttribute = memberInfo[0].GetCustomAttributes(typeof(DisplayAttribute), false) as DisplayAttribute[];
+	        if (displayAttribute == null || displayAttribute.Length != 1)
+		    return null;
+
+	        return displayAttribute[0].Name;
+	    }
     }
 }
